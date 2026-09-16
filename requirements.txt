@@ -1,0 +1,8 @@
+opencv-contrib-python-headless>=4.8,<5
+numpy>=1.24
+Pillow>=10.0
+
+# Optional: needed to use the bundled NIMA aesthetic model
+# (smartcrop/models/nima_mobilenet.onnx, SmartCropper(use_nima=True)) or a
+# custom u2net saliency backend. Not required for the default pipeline.
+# onnxruntime>=1.16
