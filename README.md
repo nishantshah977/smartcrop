@@ -19,17 +19,13 @@ also ships an optional trained aesthetic-quality model (NIMA) for
 going beyond heuristics — see "Where this falls short" and "Optional:
 learned aesthetic scoring (NIMA)" below.
 
-Original photo:
-
-![Original example photo](examples/IMG_1049.JPG)
-
-Saliency heatmap + chosen box (left) and the resulting crop (right):
-
-![Saliency heatmap and resulting crop for the included example photo](outputs/debug.jpg)
-
-Just the crop:
-
-![Cropped output for the included example photo](outputs/cropped.jpg)
+<table>
+<tr>
+<td align="center"><b>Original</b><br><img src="examples/IMG_1049.JPG" width="280"></td>
+<td align="center"><b>Saliency + chosen box</b><br><img src="outputs/debug.jpg" width="280"></td>
+<td align="center"><b>Resulting crop</b><br><img src="outputs/cropped.jpg" width="280"></td>
+</tr>
+</table>
 
 ## Contents
 
