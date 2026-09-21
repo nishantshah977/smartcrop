@@ -25,6 +25,11 @@ learned aesthetic scoring (NIMA)" below.
 <td align="center"><b>Saliency + chosen box</b><br><img src="outputs/debug.jpg" width="280"></td>
 <td align="center"><b>Resulting crop</b><br><img src="outputs/cropped.jpg" width="280"></td>
 </tr>
+<tr>
+<td align="center"><b>Original</b><br><img src="examples/IMG_2865.JPG" width="280"></td>
+<td align="center"><b>Saliency + chosen box</b><br><img src="outputs/debug1.jpg" width="280"></td>
+<td align="center"><b>Resulting crop</b><br><img src="outputs/cropped1.jpg" width="280"></td>
+</tr>
 </table>
 
 ## Contents
@@ -50,11 +55,11 @@ in one vectorized numpy pass (integral images / summed-area tables) —
 no per-candidate Python loop. Final coordinates are rescaled back to the
 original image's resolution.
 
-| stage                                    | time (4032×3024 photo) |
-|-------------------------------------------|------------------------|
-| JPEG decode (unavoidable, any approach)    | ~75ms                  |
-| saliency + aesthetic maps + scoring ~300 candidates | ~100ms        |
-| **total, `crop()`**                        | **~170-250ms**          |
+| stage                                               | time (4032×3024 photo) |
+| --------------------------------------------------- | ---------------------- |
+| JPEG decode (unavoidable, any approach)             | ~75ms                  |
+| saliency + aesthetic maps + scoring ~300 candidates | ~100ms                 |
+| **total, `crop()`**                                 | **~170-250ms**         |
 
 If you already have the image decoded in memory (e.g. a web server that
 already loaded it for something else), it's the ~100ms figure, not the
@@ -215,6 +220,7 @@ image_aesthetic_score(cv2.imread("photo.jpg"))
 # {'score': 78.6, 'sharpness': 100.0, 'colorfulness': 18.0,
 #  'contrast': 97.3, 'exposure': 99.0}
 ```
+
 Useful for ranking/filtering a batch of photos (blurry, flat, over/under
 exposed shots score low) independent of any crop.
 
@@ -236,18 +242,18 @@ python -m smartcrop.cli photo.jpg --out cropped.jpg --aspect 4:5 --debug debug.j
 
 Full CLI reference:
 
-| Flag | Default | What it does |
-|---|---|---|
-| `input` (positional) | — | Path to the source image |
-| `--out`, `-o` | `<input>_cropped.<ext>` | Where to save the cropped image |
-| `--aspect`, `-a` | multi-ratio search | Target ratio, e.g. `4:5`, `16:9`, `1:1` |
-| `--platform`, `-p` | — | Named preset instead of `--aspect`, e.g. `instagram_story` — see `smartcrop/social.py` for the full list |
-| `--backend` | `auto` | Saliency backend: `auto`, `spectral`, `fine`, `u2net` |
-| `--analysis-size` | `480` | Working resolution cap (px); lower = faster |
-| `--use-nima` | off | Re-rank top candidates with the bundled NIMA model |
-| `--nima-top-k` | `8` | How many candidates to re-rank when `--use-nima` is set |
-| `--coords-only` | off | Print JSON (box, score, aesthetic, nima_score if used) and exit — no image files written |
-| `--debug` | — | Also save the heatmap+boxes+crop debug visualization to this path |
+| Flag                 | Default                 | What it does                                                                                             |
+| -------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------- |
+| `input` (positional) | —                       | Path to the source image                                                                                 |
+| `--out`, `-o`        | `<input>_cropped.<ext>` | Where to save the cropped image                                                                          |
+| `--aspect`, `-a`     | multi-ratio search      | Target ratio, e.g. `4:5`, `16:9`, `1:1`                                                                  |
+| `--platform`, `-p`   | —                       | Named preset instead of `--aspect`, e.g. `instagram_story` — see `smartcrop/social.py` for the full list |
+| `--backend`          | `auto`                  | Saliency backend: `auto`, `spectral`, `fine`, `u2net`                                                    |
+| `--analysis-size`    | `480`                   | Working resolution cap (px); lower = faster                                                              |
+| `--use-nima`         | off                     | Re-rank top candidates with the bundled NIMA model                                                       |
+| `--nima-top-k`       | `8`                     | How many candidates to re-rank when `--use-nima` is set                                                  |
+| `--coords-only`      | off                     | Print JSON (box, score, aesthetic, nima_score if used) and exit — no image files written                 |
+| `--debug`            | —                       | Also save the heatmap+boxes+crop debug visualization to this path                                        |
 
 `--coords-only` is the one to reach for if you're calling this from a
 script/pipeline — it skips writing any image and just prints:
@@ -257,10 +263,17 @@ script/pipeline — it skips writing any image and just prints:
   "box": [1134, 269, 2646, 2159],
   "score": 0.9123,
   "elapsed_seconds": 0.27,
-  "aesthetic": {"score": 78.6, "sharpness": 100.0, "colorfulness": 18.0, "contrast": 97.3, "exposure": 99.0},
+  "aesthetic": {
+    "score": 78.6,
+    "sharpness": 100.0,
+    "colorfulness": 18.0,
+    "contrast": 97.3,
+    "exposure": 99.0
+  },
   "nima_score": 5.328
 }
 ```
+
 (`nima_score` only appears if `--use-nima` was passed.) Note: each CLI
 invocation pays a one-time ONNX session startup cost for `--use-nima`
 (~1-1.5s on first call in a fresh process) — that cost disappears if
@@ -320,7 +333,7 @@ hand-written weights with a learned scoring model, and could reuse
 
 ## Optional: deep saliency backend (U²-Net)
 
-The scorer works with *any* saliency map, so you can drop in a proper
+The scorer works with _any_ saliency map, so you can drop in a proper
 salient-object-detection model instead of the OpenCV heuristics:
 
 1. Get a `u2netp.onnx` file (the small/"portable" U²-Net variant is
