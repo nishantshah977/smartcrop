@@ -4,5 +4,7 @@ venv/
 outputs/*.jpg
 outputs/*.png
 !outputs/cropped.jpg
+!outputs/cropped1.jpg
 !outputs/debug.jpg
+!outputs/debug1.jpg
 !outputs/.gitkeep
